@@ -1,0 +1,76 @@
+NUM_TESTS = 20751334 # wc orig-nanopore-2-control.tsv, subtract 1 for header
+MERGE_DIST = 5000
+PVAL = 0.025
+GENOME = "jamAngA5"
+WINDOW_SIZE = 1000
+WINDOW_STEP = 100
+
+TRIPLES = [
+      ["nanopore-1-15min", "nanopore-1-30min", "nanopore-1-control"],
+      ["nanopore-2-unit1", "nanopore-2-unit3", "nanopore-2-control"]]
+
+
+# the main rule to make all required images
+rule all_img_paired:
+     input: expand("imgpaired-{p[0]}-AND-{p[1]}-VS-{p[2]}-PVAL-{pval}.pdf", p=TRIPLES, pval=[PVAL])
+
+# run fisher test for each geneome position
+rule fisher:
+     input: treated="orig-{name1}.tsv", control="orig-{name2}.tsv"
+     output: "fisher-{name1}-VS-{name2}.tsv"
+     shell:
+       """
+       python3 fisher.py {input.treated} {input.control} > {output}
+       """
+
+# create a bed file for significant k-mers
+rule filter:
+     input: "fisher-{name}.tsv"
+     output: "regions-{name}-PVAL-{val}.bed"
+     shell:
+       """
+       perl -lane '$F[0]=~s/contig/chr/; print join("\t", $F[0], $F[1]-1, $F[1]+21-1) if $F[2]<={wildcards.val}/{NUM_TESTS}' {input} > {output}.tmp
+       bedtools merge -i {output}.tmp > {output}
+       rm {output}.tmp
+       """
+
+# density of significant k-mers in a window
+rule density:
+     input: bed="regions-{name}.bed", sizes=GENOME+".sizes"
+     output: "density-{name}.tsv"
+     shell:
+       """
+       # windows of size 1kb, step 100bp
+       bedtools makewindows -g {input.sizes} -w {WINDOW_SIZE} -s {WINDOW_STEP} > {output}.tmp.windows
+       # window coverage by significant kmers, density shown in gray
+       bedtools coverage -a {output}.tmp.windows -b {input.bed} > {output}
+       rm {output}.tmp.windows
+       """
+
+# merge nearby significant windows
+rule merged_windows:
+     input: "density-{name}.tsv"
+     output: "merged-{name}.bed"
+     shell:
+       """
+       # get windows with >50% coverage
+       perl -lane 'print join("\t", @F[0..2]) if $F[6]>0.5' {input} > {output}.tmp.bed
+       # merge with distance 5000, show centre of each interval in red
+       bedtools merge -i {output}.tmp.bed -d {MERGE_DIST} > {output}
+       rm {output}.tmp.bed
+       """
+
+# create final figures
+rule imgPaired:
+  input:
+    GENOME+".sizes",
+    "density-{fg1}-VS-{bg}-PVAL-{pval}.tsv",
+    "merged-{fg1}-VS-{bg}-PVAL-{pval}.bed",
+    "density-{fg2}-VS-{bg}-PVAL-{pval}.tsv",
+    "merged-{fg2}-VS-{bg}-PVAL-{pval}.bed",
+  output: "imgpaired-{fg1}-AND-{fg2}-VS-{bg}-PVAL-{pval}.pdf"
+  shell:
+    """
+    Rscript --vanilla chromfigPaired.R {input} {output}
+    """
+    

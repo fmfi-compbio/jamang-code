@@ -1,0 +1,28 @@
+This folder contains the data files and a script needed to produce violin plots of telomere lengths.
+
+Run as
+```
+python3 violins.py
+```
+
+This will create 5 pdf files: one for each species and one combining all 4 in one figure. 
+
+Python 3.12.3 with libraries
+* numpy==1.26.4
+* pandas==2.1.4+dfsg
+* matplotlib==3.6.3
+* seaborn==0.13.2
+
+Each tsv file lists nanopore reads from one species that were used in the HMM analysis. The columns are
+
+* chromosomal end (suffix `s` means left end, suffix `e` means right end)
+* read ID and coordinates of the studied region (typically from the unique chromosomal region until the end of the read) and strand (all read fragments were orented towards chromosome end.
+* type of HMM states:
+  `telo`: distal telomeric repeats
+  `sub`: proximal telomeric repeats
+  `bg_start`: background state before the first motif
+  `bg_end`: background state after the last motif
+  `bg_middle` background states interleved between motifs
+* the number of bases emitted by the HMM in the states in the category given in column 3
+
+The violin plot considers the sum of `telo` and `sub` records for each chromosomal end (`sub` is not always present).
