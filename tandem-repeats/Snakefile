@@ -1,0 +1,32 @@
+GENOMES = ["jamAng", "jamPal", "jamPhy", "symKan", "ustMay"]
+
+rule all:
+  input: expand("{genome}-tandem-repeats-proc.tsv", genome=GENOMES)
+
+# columns id, repeat length, count, overall length, is it telo?
+rule tsv:
+  input: rep="{genome}/tandem-repeats-all.txt"
+  output: tsv="{genome}-tandem-repeats-proc.tsv"
+  shell:
+    """
+    # keep only tandem repeats that are long enough
+    perl -lane 'print join("\t", @F[0..5]) if $F[3]>=30 && $F[4]>=2' {input.rep} > {output}.tmp.tsv
+    # reformat
+    perl -lane '$l=$F[2]-$F[1]; print join("\t", @F[0..2], "rep$._$F[3]_$F[4]_$l")' {output}.tmp.tsv > {output}.tmp.bed
+    # add info about overlaps with telomeres
+    overlapSelect  -aggregate -statsOutputAll {wildcards.genome}/{wildcards.genome}A[0-9]-telo-self.bed {output}.tmp.bed stdout | grep -v '^#' | perl -lane '@a=split "_", $F[0]; die unless @a==4; $F[1]=1 if $F[1]>0; print join("\t", $F[0], $a[1], $a[2], $a[3], $F[1]);' > {output}
+    rm {output}.tmp.bed {output}.tmp.tsv
+    """
+
+rule tsv2:
+  input: rep="ustMay-tandem-repeats-all.txt"
+  output: tsv="ustMay-tandem-repeats-proc.tsv"
+  shell:
+    """
+    # keep only tandem repeats that are long enough
+    perl -lane 'print join("\t", @F[0..5]) if $F[3]>=30 && $F[4]>=2' {input.rep} > {output}.tmp.tsv
+    # reformat
+    perl -lane '$l=$F[2]-$F[1]; print join("\t","rep$._$F[3]_$F[4]_$l", $F[3], $F[4], $l, 0)' {output}.tmp.tsv > {output}
+    rm {output}.tmp.tsv
+    """
+
