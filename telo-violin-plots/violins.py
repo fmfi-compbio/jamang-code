@@ -35,7 +35,7 @@ def add_counts(table, ax, max_len):
             ha="right", va="top", color="gray")
 
 
-def draw_data_single(table, species, filename, max_len):
+def draw_data_single(table, species, filename_fig, filename_txt, max_len):
     # count chromosomes
     chrom = table['telo'].nunique() / 2
     
@@ -53,8 +53,13 @@ def draw_data_single(table, species, filename, max_len):
     ax.set_ylim(0, max_len)
     ax.set_xlim(left=-0.5)
     ax.tick_params("x", rotation=90)
-    fig.savefig(filename, bbox_inches='tight')
+    fig.savefig(filename_fig, bbox_inches='tight')
 
+    # 3rd quantile in kb
+    estimates = table.groupby('telo')['len'].quantile(0.75) / 1000
+    # print with 1 decimal place
+    estimates.to_csv(filename_txt,sep="\t", float_format='%.1f')
+    
     
 def draw_data_all(species, filename, max_len):
     # count chromosomes for each species
@@ -116,6 +121,7 @@ species2 = []
 for (short, long, max_len) in species:
     table = get_data(f"{short}-counts.tsv")
     species2.append((long, table))
-    draw_data_single(table, long, f"{short}-counts.pdf", max_len)
+    draw_data_single(table, long,
+                     f"{short}-counts.pdf", f"{short}-counts.txt", max_len)
 
 draw_data_all(species2, "all-counts.pdf", 48000)
