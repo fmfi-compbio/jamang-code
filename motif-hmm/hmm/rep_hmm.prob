@@ -1,0 +1,8 @@
+exit_bg 0.001
+exit_motif 0.0001
+start_del 0.05
+continue_del 0.5
+max_del 7
+start_ins 0.05
+continue_ins 0.5
+subst 0.01
