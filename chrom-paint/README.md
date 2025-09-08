@@ -1,4 +1,4 @@
-This folder contains files needed to create chromosome paint figure where chromosomes of J. angkorensis painted by nucleotide alignments with the three target genomes.
+This folder contains files needed to create chromosome paint figure where chromosomes of J. angkorensis are painted by nucleotide alignments with the three target genomes.
 
 Files:
 * `chrompaint2.py` the script to create the figure

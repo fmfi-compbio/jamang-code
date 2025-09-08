@@ -1,4 +1,4 @@
-This folder contains files needed for analysys of 7-mers in telomeric motifs
+This folder contains files needed for analysis of 7-mers in telomeric motifs
 
 * `all-telo.fa` the list of all motifs, the main input for the analysis
 * `clusters.py` a Python script that runs various analyses on the input motifs (containment distance, clustering at various thresholds)
