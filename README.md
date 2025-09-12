@@ -4,6 +4,8 @@ Code used for *Jaminaea angkorensis* analysis from our article currently availab
 
 Brona Brejova, Viktoria Hodorova, Hana Lichancova, Askar Gafurov, Dominik Bujna, Filip Brazdovic, Filip Cervenak, Tomas Petrik, Eva Hegedusova, Michaela Forgacova Jakubkova, Martina Nebohacova, Lubomir Tomaska, Matthias Sipiczki, Tomas Vinar, Jozef Nosek: **Noncanonical chromosomal-end-specific telomeric arrays in naturally telomerase-negative yeasts**. [bioRxiv 2025.09.07.674783](https://doi.org/10.1101/2025.09.07.674783)
 
+Data can be visualized in our [genome browser](http://genome.compbio.fmph.uniba.sk/).
+
 Each folder contains both data and scripts for a particular analysis as well as a README file describing the file and other requirements. All analyses were run on Ubuntu Linux.
 
 
