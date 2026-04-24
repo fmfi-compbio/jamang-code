@@ -1,32 +1,46 @@
 GENOMES = ["jamAng", "jamPal", "jamPhy", "symKan", "ustMay"]
+# minimum length of one repeat motif
+MINMOTIF = 1
+# minimum number of repetitions
+MINCOPIES = 2
+# minimum total length covered by array
+MINTOTAL = 30
 
 rule all:
   input: expand("{genome}-tandem-repeats-proc.tsv", genome=GENOMES)
 
 # columns id, repeat length, count, overall length, is it telo?
 rule tsv:
-  input: rep="{genome}/tandem-repeats-all.txt"
+  input: rep="{genome}/tandem-repeats-all.txt",
+         bed="{genome}/{genome}-telo-self.bed"
   output: tsv="{genome}-tandem-repeats-proc.tsv"
   shell:
     """
     # keep only tandem repeats that are long enough
-    perl -lane 'print join("\t", @F[0..5]) if $F[3]>=30 && $F[4]>=2' {input.rep} > {output}.tmp.tsv
+    perl -lane 'print join("\t", @F[0..5]) if $F[3]>={MINMOTIF} && $F[4]>={MINCOPIES} && $F[2]-$F[1]>={MINTOTAL}' {input.rep} > {output}.tmp.tsv
     # reformat
     perl -lane '$l=$F[2]-$F[1]; print join("\t", @F[0..2], "rep$._$F[3]_$F[4]_$l")' {output}.tmp.tsv > {output}.tmp.bed
     # add info about overlaps with telomeres
-    overlapSelect  -aggregate -statsOutputAll {wildcards.genome}/{wildcards.genome}A[0-9]-telo-self.bed {output}.tmp.bed stdout | grep -v '^#' | perl -lane '@a=split "_", $F[0]; die unless @a==4; $F[1]=1 if $F[1]>0; print join("\t", $F[0], $a[1], $a[2], $a[3], $F[1]);' > {output}
+    overlapSelect  -aggregate -statsOutputAll {input.bed} {output}.tmp.bed stdout | grep -v '^#' | perl -lane '@a=split "_", $F[0]; die unless @a==4; $F[1]=1 if $F[1]>0; print join("\t", $F[0], $a[1], $a[2], $a[3], $F[1]);' > {output}
     rm {output}.tmp.bed {output}.tmp.tsv
     """
 
-rule tsv2:
-  input: rep="ustMay-tandem-repeats-all.txt"
-  output: tsv="ustMay-tandem-repeats-proc.tsv"
-  shell:
-    """
-    # keep only tandem repeats that are long enough
-    perl -lane 'print join("\t", @F[0..5]) if $F[3]>=30 && $F[4]>=2' {input.rep} > {output}.tmp.tsv
-    # reformat
-    perl -lane '$l=$F[2]-$F[1]; print join("\t","rep$._$F[3]_$F[4]_$l", $F[3], $F[4], $l, 0)' {output}.tmp.tsv > {output}
-    rm {output}.tmp.tsv
-    """
-
+rule telo_blast:
+   input: fa="ustMay/ustMay.fa", telo="ustMay/ttaggg4x.fa"
+   output: bed="ustMay/ustMay-telo-self.bed"
+   shell:
+     """
+     # create blast db and search with dust masking off
+     makeblastdb -in {input.telo} -dbtype nucl -out {output}.tmp.blast
+     blastn -dust no -db {output}.tmp.blast -query {input.fa} -task blastn -outfmt "6 qaccver qstart qend saccver  sstart send nident pident bitscore evalue" -evalue 1e-3 -num_alignments 10000 -num_threads 4 > {output}.tmp.blast
+     # reformat matches to a bed file
+     perl -lane 'print join("\t", @F[0,1,2])' {output}.tmp.blast | sort -k1,1 -k2,2g > {output}.tmp1.bed
+     # merge overlapping matches
+     bedtools merge -i {output}.tmp1.bed > {output}.tmp2.bed
+     # create bedfile with 1kb regions at telomere ends
+     faSize -detailed {input.fa} | perl -lane 'print join("\t", $F[0],0,1000); print join("\t", $F[0], $F[1]-1000,$F[1]);' | sort -k1,1 -k2,2g > {output}.tmp3.bed
+     # keep only matches overlapping telomere ends
+     bedtools intersect -u -a {output}.tmp2.bed -b {output}.tmp3.bed > {output}
+     # remove temp files
+     rm {output}.tmp?.bed {output}.tmp.blast* 
+     """

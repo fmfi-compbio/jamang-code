@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 genomes = ["jamAng", "jamPal", "jamPhy", "symKan", "ustMay"]
-long = ["J. angkorensis", "J. pallidilutea", "J. phylloscopi", "S. kandeliae", "M. maydis"]
+long = ["J. angkorensis", "J. pallidilutea", "P. phylloscopi", "S. kandeliae", "M. maydis"]
 
 fig, axes = plt.subplots(1, 5, figsize=(20, 4), sharey=True, sharex=True)
 category = pd.CategoricalDtype(categories=["telomeric", "other"], ordered=True)
@@ -20,7 +20,7 @@ for i, genome in enumerate(genomes):
 
     sns.scatterplot(data=df, x="length", y="rep", hue="telo", ax=axes[i], s=10, 
                     palette=["red", "gray"], alpha=0.8, legend=(i==0))
-    axes[i].set_title(long[i])
+    axes[i].set_title(long[i], style='italic')
     axes[i].set_xscale("log")
     axes[i].set_xlabel("total length")
     axes[i].set_ylabel("motif length")
