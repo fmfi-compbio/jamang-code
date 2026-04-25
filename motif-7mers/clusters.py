@@ -31,7 +31,10 @@ def main():
                         default=7, help='k-mer size')
     parser.add_argument('--dist_list', 
                         default=None,
-                        help='distances to use, se[arated by ",".Default all with step 0.1')
+                        help='distances to use, separated by ",".Default all with step 0.1.')
+    parser.add_argument('--add_identity',
+                       action='store_true',
+                       help='As distance 0 consider only identical motifs, otherwise containment distance (nonindentical containent 0 will be replaced with half of smallest non-zero containment). Identity considered only for input rotation.')
 
     
     args = parser.parse_args()
@@ -43,7 +46,7 @@ def main():
     motifs = read_fasta(args.input_filename, args.kmer)
     names = list(motifs.keys())
 
-    dist_matrix = get_dist_matrix(motifs, names, args.containment)
+    dist_matrix = get_dist_matrix(motifs, names, args.containment, args.add_identity)
 
     dist_matrix_named = pd.DataFrame(dist_matrix, index=names, columns=names)
     dist_matrix_named.to_csv(f"{args.output_prefix}-dist.tsv", sep='\t')
@@ -144,16 +147,34 @@ def dendogram(dist_matrix, names, threshold, output_filename):
     plt.savefig(output_filename)
 
     
-def get_dist_matrix(motifs, names, containment):
+def get_dist_matrix(motifs, names, containment, add_identity):
     n = len(names)
     dist_matrix = np.zeros((n,n))
-    
+
     for i in range(n):
         for j in range(i+1,n):
             dist_matrix[i,j]=jaccard(motifs[names[i]],
                                      motifs[names[j]],
                                      containment)
             dist_matrix[j,i]=dist_matrix[i,j]
+
+    # if add_identity, keep zero for only identical
+    # rest will get half of smallest observed non-zero distance
+    if add_identity:
+        values = np.unique(dist_matrix)
+        assert values[0]==0, "minimum in the distance matrix should be 0"
+        assert len(values) > 1, "distance matrix shoudl contain multiple values"
+        min_nozero = values[1]
+        replace = min_nozero / 2
+        print(f"Non-identical motifs get containment distance {replace:.4f}")
+        
+        for i in range(n):
+            for j in range(i+1,n):
+                if dist_matrix[i,j]==0 and motifs[names[i]] != motifs[names[j]]:
+                    print(f"replacing 0 by {replace:.4f} for {names[i]}, {names[j]}")
+                    dist_matrix[i,j] = replace
+                    dist_matrix[j,i] = replace
+            
     return dist_matrix
 
 def rewrite_name(name):

@@ -1,120 +1,120 @@
-name	group0.1	group0.7	group0.8	group1.0
-jamPal-chr10R-d	1	1	1	1
-jamPal-chr10L-d	1	1	1	1
-jamPal-chr09L-d	1	1	1	1
-jamPal-chr01L-d	1	1	1	1
-jamPal-chr07R-d	1	1	1	1
-jamPal-chr06R-d	1	1	1	1
-jamPal-chr13R-d	1	1	1	1
-jamPal-chr12R-d	1	1	1	1
-jamPal-chr02L-d	1	1	1	1
-jamPal-chr08R-d	1	1	1	1
-jamPal-chr04L-d	1	1	1	1
-jamPal-chr14R-d	1	1	1	1
-jamPal-chr15L-d	1	1	1	1
-jamPal-chr05R-d	1	1	1	1
-jamPal-chr03R-d	1	1	1	1
-jamPal-chr14R-p3	2	1	1	1
-jamPal-chr09L-p	2	1	1	1
-jamPal-chr12R-p	2	1	1	1
-jamPal-chr03R-p	2	1	1	1
-jamPal-chr05R-p	3	1	1	1
-jamPal-chr02L-p2	3	1	1	1
-jamPal-chr06R-p	4	1	1	1
-jamPal-chr10L-p	4	1	1	1
-jamPal-chr14R-p4	5	1	1	1
-jamPal-chr14R-p1	5	1	1	1
-jamPal-chr07L-d	6	1	1	1
-jamPal-chr14R-p2	6	1	1	1
-jamPal-chr13R-p	7	1	1	1
-jamPal-chr02L-p1	7	1	1	1
-jamPal-chr16L-d	8	1	1	1
-jamPal-chr10R-p	9	1	1	1
-jamPal-chr15L-p	10	1	1	1
-jamPal-chr07R-p	11	1	1	1
-symKan-chr5R-d	12	12	1	1
-symKan-chr1R-d	12	12	1	1
-symKan-chr3L-d	12	12	1	1
-jamPal-chr16R-d	13	13	1	1
-jamPal-chr14L-d	13	13	1	1
-jamPal-chr03L-d	13	13	1	1
-jamPal-chr11L-d	14	14	1	1
-jamPal-chr06L-d	14	14	1	1
-jamAng-chr15R-d	15	15	1	1
-symKan-chr1L-d	16	16	16	1
-symKan-chr2R-d	16	16	16	1
-symKan-chr3R-d	16	16	16	1
-symKan-chr1L-p	17	16	16	1
-symKan-chr4L-d	17	16	16	1
-symKan-chr2R-p1	18	16	16	1
-symKan-chr2R-p2	18	16	16	1
-symKan-chr6L-d	19	19	16	1
-symKan-chr6R-d	19	19	16	1
-symKan-chr5L-d	20	20	16	1
-jamAng-chr13R-d	21	21	21	1
-jamAng-chr08R-d	21	21	21	1
-jamAng-chr02R-d	21	21	21	1
-jamAng-chr08R-p	21	21	21	1
-jamAng-chr13R-p	22	21	21	1
-jamAng-chr05L-d	23	23	21	1
-jamAng-chr06R-d	24	24	21	1
-jamPal-chr04R-d	25	25	25	1
-jamPal-chr01R-d	25	25	25	1
-jamPal-chr12L-d	26	26	25	1
-jamPal-chr02R-d	27	26	25	1
-jamPal-chr13L-d	28	28	25	1
-jamPal-chr15R-d	29	29	25	1
-jamAng-chr04R-d	30	30	30	1
-jamAng-chr18R-d	30	30	30	1
-jamAng-chr18R-p	31	30	30	1
-jamAng-chr04R-p	32	30	30	1
-jamAng-chr03R-d	33	33	30	1
-jamPhy-chr2R-d	34	34	34	1
-jamPhy-chr3L-d	34	34	34	1
-jamPhy-chr2R-p	35	35	34	1
-jamAng-chr13L-d	36	36	36	1
-jamAng-chr11R-d	37	37	36	1
-jamAng-chr09R-d	38	38	38	1
-jamAng-chr17R-d	39	39	38	1
-jamAng-chr20L-d	40	40	40	1
-jamAng-chr20R-d	40	40	40	1
-jamAng-chr10L-d	41	41	41	1
-jamAng-chr16R-d	42	42	41	1
-jamAng-chr08L-d	43	43	43	1
-jamAng-chr12L-d	44	44	43	1
-jamAng-chr19R-d	45	45	45	1
-symKan-chr4R-d	46	46	45	1
-symKan-chr2L-d	47	47	47	1
-symKan-chr2L-p	48	47	47	1
-jamAng-chr09L-d	49	49	49	1
-jamAng-chr07R-d	50	50	50	1
-jamAng-chr07L-d	51	51	51	1
-jamAng-chr06L-d	52	52	52	1
-jamAng-chr04L-d	53	53	53	1
-jamAng-chr05R-d	54	54	54	1
-jamAng-chr02L-d	55	55	55	1
-jamAng-chr03L-d	56	56	56	1
-jamAng-chr01R-d	57	57	57	1
-jamAng-chr01L-d	58	58	58	1
-jamAng-chr12R-d	59	59	59	1
-jamAng-chr15L-d	60	60	60	1
-jamAng-chr14R-d	61	61	61	1
-jamAng-chr14L-d	62	62	62	1
-jamAng-chr11L-d	63	63	63	1
-jamAng-chr10R-d	64	64	64	1
-jamAng-chr18L-d	65	65	65	1
-jamAng-chr19L-d	66	66	66	1
-jamAng-chr16L-d	67	67	67	1
-jamAng-chr17L-d	68	68	68	1
-jamPal-chr08L-d	69	69	69	1
-jamAng-chr02R-p	70	70	70	1
-jamAng-chr10R-p	71	71	71	1
-jamPal-chr05L-d	72	72	72	1
-jamPal-chr04R-p	73	73	73	1
-jamPal-chr11R-d	74	74	74	1
-jamPal-chr09R-d	75	75	75	1
-jamPhy-chr1L-d	76	76	76	1
-jamPhy-chr2L-d	77	77	77	1
-jamPhy-chr1R-d	78	78	78	1
-jamPhy-chr3L-p	79	79	79	1
-jamPhy-chr3R-d	80	80	80	1
+name	group0.0	group0.1	group0.7	group0.8	group1.0
+jamPal-chr10R-d	1	1	1	1	1
+jamPal-chr15L-d	1	1	1	1	1
+jamPal-chr09L-d	1	1	1	1	1
+jamPal-chr06R-d	1	1	1	1	1
+jamPal-chr05R-d	1	1	1	1	1
+jamPal-chr07R-d	1	1	1	1	1
+jamPal-chr02L-d	1	1	1	1	1
+jamPal-chr14R-d	1	1	1	1	1
+jamPal-chr03R-d	1	1	1	1	1
+jamPal-chr13R-d	2	1	1	1	1
+jamPal-chr04L-d	2	1	1	1	1
+jamPal-chr08R-d	2	1	1	1	1
+jamPal-chr12R-d	3	1	1	1	1
+jamPal-chr10L-d	4	1	1	1	1
+jamPal-chr01L-d	5	1	1	1	1
+jamPal-chr09L-p	6	6	1	1	1
+jamPal-chr03R-p	6	6	1	1	1
+jamPal-chr12R-p	6	6	1	1	1
+jamPal-chr14R-p3	6	6	1	1	1
+jamPal-chr02L-p2	7	7	1	1	1
+jamPal-chr05R-p	8	7	1	1	1
+jamPal-chr06R-p	9	9	1	1	1
+jamPal-chr10L-p	9	9	1	1	1
+jamPal-chr14R-p4	10	10	1	1	1
+jamPal-chr14R-p1	11	10	1	1	1
+jamPal-chr07L-d	12	12	1	1	1
+jamPal-chr14R-p2	13	12	1	1	1
+jamPal-chr02L-p1	14	14	1	1	1
+jamPal-chr13R-p	14	14	1	1	1
+jamPal-chr16L-d	15	15	1	1	1
+jamPal-chr10R-p	16	16	1	1	1
+jamPal-chr15L-p	17	17	1	1	1
+jamPal-chr07R-p	18	18	1	1	1
+symKan-chr1R-d	19	19	19	1	1
+symKan-chr5R-d	19	19	19	1	1
+symKan-chr3L-d	19	19	19	1	1
+jamPal-chr16R-d	20	20	20	1	1
+jamPal-chr14L-d	20	20	20	1	1
+jamPal-chr03L-d	20	20	20	1	1
+jamPal-chr06L-d	21	21	21	1	1
+jamPal-chr11L-d	21	21	21	1	1
+jamAng-chr15R-d	22	22	22	1	1
+symKan-chr1L-d	23	23	23	23	1
+symKan-chr2R-d	23	23	23	23	1
+symKan-chr3R-d	23	23	23	23	1
+symKan-chr1L-p	24	24	23	23	1
+symKan-chr4L-d	25	24	23	23	1
+symKan-chr2R-p1	26	26	23	23	1
+symKan-chr2R-p2	27	26	23	23	1
+symKan-chr6L-d	28	28	28	23	1
+symKan-chr6R-d	28	28	28	23	1
+symKan-chr5L-d	29	29	29	23	1
+jamAng-chr02R-d	30	30	30	30	1
+jamAng-chr08R-d	30	30	30	30	1
+jamAng-chr13R-d	30	30	30	30	1
+jamAng-chr08R-p	31	30	30	30	1
+jamAng-chr13R-p	32	32	30	30	1
+jamAng-chr05L-d	33	33	33	30	1
+jamAng-chr06R-d	34	34	34	30	1
+jamPal-chr01R-d	35	35	35	35	1
+jamPal-chr04R-d	35	35	35	35	1
+jamPal-chr12L-d	36	36	36	35	1
+jamPal-chr02R-d	37	37	36	35	1
+jamPal-chr13L-d	38	38	38	35	1
+jamPal-chr15R-d	39	39	39	35	1
+jamAng-chr18R-d	40	40	40	40	1
+jamAng-chr04R-d	40	40	40	40	1
+jamAng-chr18R-p	41	41	40	40	1
+jamAng-chr04R-p	42	42	40	40	1
+jamAng-chr03R-d	43	43	43	40	1
+jamPhy-chr2R-d	44	44	44	44	1
+jamPhy-chr3L-d	44	44	44	44	1
+jamPhy-chr2R-p	45	45	45	44	1
+jamAng-chr13L-d	46	46	46	46	1
+jamAng-chr11R-d	47	47	47	46	1
+jamAng-chr09R-d	48	48	48	48	1
+jamAng-chr17R-d	49	49	49	48	1
+jamAng-chr20R-d	50	50	50	50	1
+jamAng-chr20L-d	50	50	50	50	1
+jamAng-chr10L-d	51	51	51	51	1
+jamAng-chr16R-d	52	52	52	51	1
+jamAng-chr08L-d	53	53	53	53	1
+jamAng-chr12L-d	54	54	54	53	1
+jamAng-chr19R-d	55	55	55	55	1
+symKan-chr4R-d	56	56	56	55	1
+symKan-chr2L-d	57	57	57	57	1
+symKan-chr2L-p	58	58	57	57	1
+jamAng-chr09L-d	59	59	59	59	1
+jamAng-chr07R-d	60	60	60	60	1
+jamAng-chr07L-d	61	61	61	61	1
+jamAng-chr06L-d	62	62	62	62	1
+jamAng-chr04L-d	63	63	63	63	1
+jamAng-chr05R-d	64	64	64	64	1
+jamAng-chr02L-d	65	65	65	65	1
+jamAng-chr03L-d	66	66	66	66	1
+jamAng-chr01R-d	67	67	67	67	1
+jamAng-chr01L-d	68	68	68	68	1
+jamAng-chr12R-d	69	69	69	69	1
+jamAng-chr15L-d	70	70	70	70	1
+jamAng-chr14R-d	71	71	71	71	1
+jamAng-chr14L-d	72	72	72	72	1
+jamAng-chr11L-d	73	73	73	73	1
+jamAng-chr10R-d	74	74	74	74	1
+jamAng-chr18L-d	75	75	75	75	1
+jamAng-chr19L-d	76	76	76	76	1
+jamAng-chr16L-d	77	77	77	77	1
+jamAng-chr17L-d	78	78	78	78	1
+jamPal-chr08L-d	79	79	79	79	1
+jamAng-chr02R-p	80	80	80	80	1
+jamAng-chr10R-p	81	81	81	81	1
+jamPal-chr05L-d	82	82	82	82	1
+jamPal-chr04R-p	83	83	83	83	1
+jamPal-chr11R-d	84	84	84	84	1
+jamPal-chr09R-d	85	85	85	85	1
+jamPhy-chr1L-d	86	86	86	86	1
+jamPhy-chr2L-d	87	87	87	87	1
+jamPhy-chr1R-d	88	88	88	88	1
+jamPhy-chr3L-p	89	89	89	89	1
+jamPhy-chr3R-d	90	90	90	90	1

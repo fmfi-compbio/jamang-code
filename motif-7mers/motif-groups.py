@@ -5,8 +5,10 @@ from collections import defaultdict
 import numpy as np
 
 # read matrix with motif position
-a = pd.read_csv('groups-manual-matrix12.csv', header=None).reset_index().rename(columns={'index':'row'})
-a = a.melt(id_vars='row', var_name='col', value_name='name').set_index('name', verify_integrity=True)
+a = pd.read_csv('groups-manual-matrix15.csv', header=None).reset_index().rename(columns={'index':'row'})
+# make into a long table with columns col, row and name
+# drop missing values, i.e. empty fields
+a = a.melt(id_vars='row', var_name='col', value_name='name').dropna().set_index('name', verify_integrity=True)
 print(a)
 
 # read other file with groups
@@ -15,6 +17,7 @@ df['species'] = df['name'].apply(lambda x: x[0:2])
 df.set_index('name', inplace=True)
 df['row'] = a['row']
 df['col'] = a['col']
+df.dropna(inplace=True)
 df.reset_index(inplace=True)
 print(df.head()) 
 
@@ -69,6 +72,8 @@ def check_neighbors(df, singletons):
     def get_group(row_index, col_index, a, df_indexed, level):
         if row_index < 0 or row_index >= a.shape[0] or col_index < 0 or col_index >= a.shape[1]:
             return -1
+        row_index = int(row_index)
+        col_index = int(col_index)
         name = a.iloc[row_index, col_index]
         if name not in df_indexed.index:
             return -1
@@ -171,7 +176,7 @@ colors = {'Pa': 'C0', 'Ph': 'C4', 'An': 'C1', 'Ka': 'C2'}
 (figure, axes) = plt.subplots(figsize=(18, 8))
 max_row = df['row'].max()
 max_col = df['col'].max()
-gapx = 0.13
+gapx = 0.15
 gapy = 0.31
 sizex = 1-2*gapx
 sizey = 1-2*gapy
@@ -185,7 +190,7 @@ for i in range(len(df)):
     sp = name[0:2]
     color = colors[sp]
     axes.add_patch(plt.Rectangle((x+gapx, y+gapy), sizex, sizey, alpha=0.3, facecolor=color))
-    axes.text(x+gapx+offsetx, y+gapy+offsety, name, 
+    axes.text(x+gapx+offsetx, y+gapy+offsety, name[2:],
               fontdict={'fontsize': 14}, va='bottom', ha='left')
 
     
