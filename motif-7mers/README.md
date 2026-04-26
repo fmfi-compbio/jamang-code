@@ -13,6 +13,11 @@ Commands used:
 # producing fw-c-7-sel-groups.tsv
 python clusters.py --add_identity --containment all-telo.fa fw-c-7-sel --dist_list "0,0.1,0.7,0.8,1" --threshold 0.7
 
+# producing fw-c-7-dist.tsv
+#   that is, distance matrix without special treatment of 0 entries
+#   used in supplement
+python clusters.py --containment all-telo.fa fw-c-7 --dist_list "0,0.1,0.7,0.8,1" --threshold 0.7
+
 # reformatting fw-c-7-sel-groups.tsv to groups-manual.tsv
 perl -lane 'next if $.==1; $n++; $n--; $F[0]=~s/...(..).-chr(\d+[LR])-(.*)$/$1$2$3/ or die $F[0]; $F[0]=~s/d$//; print join("\t", @F, int($n/8), $n%8); $n++' fw-c-7-sel-groups.tsv > groups-manual.tsv
 
@@ -37,6 +42,7 @@ perl -lane 'print if substr($F[2],0,6) ne substr($F[6],0,6)' all-telo2x.blast.ts
 perl -lane 'print if $F[1] eq "-"' all-telo2x.blast.tsv
 # rm temporary files
 rm blast.tmp.n* blast.tmp.out blast.tmp.tsv all-telo2x.fa
+# file all-telo2x.blast.tsv used in supplement
 ```
 
 * Python 3.12.3 with libraries:
