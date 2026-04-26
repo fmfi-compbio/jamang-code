@@ -5,7 +5,8 @@ This folder contains files needed for analysis of 7-mers in telomeric motifs and
 * `motif-groups.py` a Python script for producing the figure
 * `fw-c-7-sel-groups.tsv` output of `clusters.py`
 * `groups.tsv` reformatted version of `fw-c-7-sel-groups.tsv`
-* `groups-manual-matrix12.csv` manually created layout of the figure
+* `groups-manual-matrix9.csv` manually created layout of the figure (older versions `groups-manual-matrix12.csv`, `groups-manual-matrix15.csv`)
+
 
 
 Commands used:
@@ -21,7 +22,7 @@ python clusters.py --containment all-telo.fa fw-c-7 --dist_list "0,0.1,0.7,0.8,1
 # reformatting fw-c-7-sel-groups.tsv to groups.tsv
 perl -lane 'if($.==1) { next}; $F[0]=~s/...(..).-chr(\d+[LR])-(.*)$/$1$2$3/ or die $F[0]; $F[0]=~s/d$//; print join("\t", @F)' fw-c-7-sel-groups.tsv > groups.tsv
 
-# producing the figure
+# producing the figure and the legend
 python3 ./motif-groups.py
 
 
