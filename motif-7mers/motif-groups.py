@@ -5,193 +5,140 @@ from collections import defaultdict
 import numpy as np
 
 # read matrix with motif position
-a = pd.read_csv('groups-manual-matrix15.csv', header=None).reset_index().rename(columns={'index':'row'})
+a = pd.read_csv('groups-manual-matrix9.csv', header=None).reset_index().rename(columns={'index':'row'})
 # make into a long table with columns col, row and name
 # drop missing values, i.e. empty fields
 a = a.melt(id_vars='row', var_name='col', value_name='name').dropna().set_index('name', verify_integrity=True)
 print(a)
 
 # read other file with groups
-df = pd.read_csv('groups-manual.tsv', sep='\t', names=['name','0.1','0.7','0.8','row', 'col'])
+levels = ['0','0.1','0.7','0.8']
+df = pd.read_csv('groups.tsv', sep='\t', names=['name']+levels)
 df['species'] = df['name'].apply(lambda x: x[0:2])
 df.set_index('name', inplace=True)
 df['row'] = a['row']
 df['col'] = a['col']
+# count singletons (all rows in species minus those with row value)
+# i.e. included in the figure
+missing = df.groupby('species')['row'].size() \
+          - df.groupby('species')['row'].count()
+print("missing", missing)
+# now drop those without row/column values
 df.dropna(inplace=True)
 df.reset_index(inplace=True)
 print(df.head()) 
 
-# find groups with only one member
-# and also groups with a unique species
-singletons = set()
-species = dict()
-for i in range(1, 4):
-    two_cols = df.iloc[:, [i-1, i]].drop_duplicates()
-    counts = two_cols.iloc[:,1].value_counts()
-    for group in counts[counts == 1].index:
-        singletons.add((i-1, group))
 
-    two_cols = df.iloc[:, [i, 6]].drop_duplicates()
-    counts = two_cols.iloc[:,0].value_counts()
-    good_groups = counts[counts == 1].index
-    two_cols.set_index(two_cols.columns[0], inplace=True)
-    for group in good_groups:
-        rows = two_cols.loc[group]
-        species[(i-1, group)] = rows.iloc[0]
+# for each rectangle the smallest group with that rectangle
+rect2group = dict()
+# for each group its rectangle, including redundant ones
+group2rect = dict()
+# list of groups to draw in reversed order
+to_draw = []
 
-# find and simplify boundaries of groups at three levels
-def straight(a, b , c):
-    if a[0]==b[0] and b[0]==c[0]:
-        return True
-    if a[1]==b[1] and b[1]==c[1]:
-        return True
-    return False
+# for all levels of groups
+for level in levels:
+    groups = df[level].unique()
+    row_min = df.groupby(level)['row'].min()
+    row_max = df.groupby(level)['row'].max()
+    col_min = df.groupby(level)['col'].min()
+    col_max = df.groupby(level)['col'].max()
+    for group in groups:
+        rect = (row_min[group], row_max[group], col_min[group], col_max[group])
+        group_id = (level, group)
+        group2rect[group_id] = rect
+        # if we found a new rectangle, add it to structures
+        if rect not in rect2group:
+            rect2group[rect] = group_id
+            to_draw.append(group_id)
+        # TODO: check that all in rectangle is part of group
 
-def simplify(differences):    
-    for chain_id in differences:
-        chain = differences[chain_id]
-        start = min(chain.keys())
-        current = start
-        count = 0
-        while True:
-            next = chain[current]
-            next2 = chain[next]
-            assert current != next and current != next2
-            if straight(current, next, next2):
-                chain[current] = next2
-                del chain[next]
-            else:
-                current = next
-                count += 1
-                if current == start:
-                    break
-        assert count == len(chain.keys()), f'{count} != {len(chain.keys())} for {chain_id}\n{chain}'
-    return differences
+# revrse order of the list to start with least significant levels
+to_draw.reverse()
 
-def check_neighbors(df, singletons):
-    def get_group(row_index, col_index, a, df_indexed, level):
-        if row_index < 0 or row_index >= a.shape[0] or col_index < 0 or col_index >= a.shape[1]:
-            return -1
-        row_index = int(row_index)
-        col_index = int(col_index)
-        name = a.iloc[row_index, col_index]
-        if name not in df_indexed.index:
-            return -1
-        return df_indexed.loc[name][level]
-    
-    # a 2d matrix of group names
-    a = df.pivot(columns='col', index='row', values='name')
-    #a.to_csv('a.csv',index=False, header=False)
-    #display(a)
-    # df indexed by name
-    df_indexed = df.set_index('name')
-    #display(df_indexed.head(2))
-    vectors = [(-1,0), (1,0), (0,-1), (0,1)]  # row and col offsets
-    vector_corners = {(-1, 0): [(-1, 1), (-1, 0)], # up 
-                      (1, 0): [(0, 0), (0, 1)], # down
-                      (0, -1): [(-1, 0), (0, 0)], # left
-                      (0, 1): [(0, 1), (-1, 1)]} # right
-    differences = defaultdict(dict)
-    for i in range(len(df)):
-        row = df.iloc[i]
-        name = row['name']
-        row_index = row['row']
-        col_index = row['col']
-        for vector in vectors:
-            new_row_index = row_index + vector[0]
-            new_col_index = col_index + vector[1]
-            for (level_pos, level) in enumerate(['0.1', '0.7', '0.8']):
-                group1 = df_indexed.loc[name][level]
-                if (level_pos, group1) in singletons:
-                    continue
-                group2 = get_group(new_row_index, new_col_index, a, df_indexed, level)
-                if group1 != group2:
-                    corners = vector_corners[vector]
-                    start = (row_index+corners[0][0], col_index+corners[0][1])
-                    end = (row_index+corners[1][0], col_index+corners[1][1])
-                    differences[(level_pos, group1)][start] = end
-    return simplify(differences)
-
-
-differences = check_neighbors(df, singletons)
-
-
-# functions for plotting lines
-def get_coords(start, end, next, level, gapx, gapy):
-    def get_sign(a, b):
-        return (np.sign(b[0]-a[0]), np.sign(b[1]-a[1]))
-
-    signs = (get_sign(start, end), get_sign(end, next))
-    sign_vectors = {
-        ((-1,0),(0,-1)): (1,-1), #up left
-        ((1,0),(0,1)): (-1,1), #down right
-        ((0,-1),(1,0)): (1,1), #left down
-        ((0,1),(-1,0)): (-1,-1), #right up
-        ((-1,0),(0,1)): (-1,-1), #up right
-        ((1,0),(0,-1)): (1,1), #down left
-        ((0,-1),(-1,0)): (1,-1), #left up
-        ((0,1),(1,0)): (-1,1) #right down
-    }
-
-
-    if signs in sign_vectors:
-        (d_row, d_col) = sign_vectors[signs]
+def get_species(df, level, group):
+    sel = df[df[level]==group]
+    assert sel.shape[0]>0
+    species = sel['species'].unique()    
+    if len(species)==1:
+        return species[0]
     else:
-        (d_row, d_col) = (0,0)
+        return None
 
-    gapx2 = gapx - gapx * (level+1) / 3.8
-    gapy2 = gapy - gapy * (level+1) / 3.8
+
+level_width = {'0':0, '0.1':0, '0.7':0, '0.8':1}
+#level_style = ['-', '-', '--']
+level_alpha = {'0':0.8, '0.1':0.5, '0.7':0.3, '0.8':0}
+level_gap = {'0':0, '0.1':1, '0.7':2, '0.8':3}
     
-
-    row = end[0] + d_row * gapy2
-    col = end[1] + d_col * gapx2
-    return (col, -row)
+def plot_rectangles(axes, to_draw, group2rect, df, colors, gapx, gapy):
     
+    for group_id in to_draw:
+        level = group_id[0]
+        rect = group2rect[group_id]
+        sp = get_species(df, group_id[0], group_id[1])
+        if sp is not None:
+            color = colors[sp]
+        else:
+            color = "black"
+        gap = level_gap[level]/5
+        gapxh = gapx*gap
+        gapyh = gapy*gap
+        x = rect[2]-gapxh
+        y = -rect[1]-gapyh
+        sizex = rect[3]-rect[2]+1-gapx+2*gapxh
+        sizey = rect[1]-rect[0]+1-gapy+2*gapyh
+        linewidth=level_width[level]
+        linestyle='-' #level_style[level]
+        alpha = level_alpha[level]
 
+        #if sp != 'Ph':
+        #    continue
 
-level_width = [3, 1, 2]
-level_style = ['-', '-', '--']
+        #print(group_id, rect, x, y, sizex, sizey, 'alpha', alpha, linewidth)
+        
+        if alpha > 0 :
+            axes.add_patch(plt.Rectangle((x+gapx, y+gapy), sizex, sizey,
+                                         capstyle='round',
+                                         alpha=alpha, facecolor=color,
+                                                linestyle=None
+                                         ))
+        if linewidth > 0:
+            axes.add_patch(plt.Rectangle((x+gapx, y+gapy), sizex, sizey,
+                                         linewidth=linewidth,
+                                         edgecolor=color,
+                                         fill=False,
+                                         linestyle=linestyle
+                                         ))
             
-def plot_lines(axes, differences, species, colors, gapx, gapy):
-    
-    for (level, group) in differences:
-        chain = differences[(level, group)]
-        for prev in chain:
-            start = chain[prev]
-            end = chain[start]
-            next = chain[end]
-            x1, y1 = get_coords(prev, start, end, level, gapx, gapy)
-            x2, y2 = get_coords(start, end, next, level, gapx, gapy)
-            if (level, group) in species:
-                color = colors[species[(level, group)]]
-            else:
-                color = 'black'
-            axes.plot([x1, x2], [y1, y2], linewidth=level_width[level], color=color, alpha=0.8, linestyle=level_style[level])
 
+    return
+    
 
 # finally the full figure
 
 #colors = {'Pa': 'red', 'Ph': 'blue', 'An': 'green', 'Ka': 'orange'}
 colors = {'Pa': 'C0', 'Ph': 'C4', 'An': 'C1', 'Ka': 'C2'}
-(figure, axes) = plt.subplots(figsize=(18, 8))
+sp2long = {'Pa': 'J. pallidilutea', 'Ph': 'P. phylloscopi', 'An': 'J. angkorensis', 'Ka': 'S. kandeliae'}
+(figure, axes) = plt.subplots(figsize=(11, 8))
 max_row = df['row'].max()
 max_col = df['col'].max()
 gapx = 0.15
 gapy = 0.31
 sizex = 1-2*gapx
 sizey = 1-2*gapy
-offsetx = 0.01
+offsetx = 0.02+0.5*sizex
 offsety = 0.015
-plot_lines(axes, differences, species, colors, gapx, gapy)
+plot_rectangles(axes, to_draw, group2rect, df, colors, gapx, gapy)
 for i in range(len(df)):
     x = df.iloc[i]['col']
     y = -df.iloc[i]['row']
     name = df.iloc[i]['name']
     sp = name[0:2]
     color = colors[sp]
-    axes.add_patch(plt.Rectangle((x+gapx, y+gapy), sizex, sizey, alpha=0.3, facecolor=color))
+    #axes.add_patch(plt.Rectangle((x+gapx, y+gapy), sizex, sizey, alpha=0.3, facecolor=color))
     axes.text(x+gapx+offsetx, y+gapy+offsety, name[2:],
-              fontdict={'fontsize': 14}, va='bottom', ha='left')
+              fontdict={'fontsize': 14}, va='bottom', ha='center')
 
     
 axes.set_axis_off()
@@ -201,12 +148,53 @@ figure.savefig('groups.pdf', bbox_inches='tight')
 
 
 # plotting legend
-(figure, axes) = plt.subplots(figsize=(1, 1))
-for level_index in range(3):
-    level_value = df.columns[level_index+1]
-    axes.plot([], [], linewidth=level_width[level_index], color='black', 
-              linestyle=level_style[level_index], label=f'{level_value}')
-axes.legend(loc='upper left')
+rec_size = 0.9
+(figure, axes) = plt.subplots(figsize=(4, 1.5))
+for (idx1, level) in enumerate(levels):    
+        linewidth=level_width[level]
+        linestyle='-' #level_style[level]
+        alpha = level_alpha[level]
+
+        level_text = level
+        if level == '0':
+            level_text = 'id.'
+        axes.text(idx1+0.5, 4.1, level_text, ha='center',va='bottom')
+        
+
+        for (idx2, species) in enumerate(colors.keys()):
+            color = colors[species]
+
+
+            print(idx1, idx2, level, species, color)
+        
+            if alpha > 0 :
+                axes.add_patch(plt.Rectangle((idx1, idx2), rec_size, rec_size,
+                                             capstyle='round',
+                                             alpha=alpha, facecolor=color,
+                                             linestyle=None
+                                             ))
+            if linewidth > 0:
+                axes.add_patch(plt.Rectangle((idx1, idx2), rec_size, rec_size,
+                                             linewidth=linewidth,
+                                             edgecolor=color,
+                                             fill=False,
+                                             capstyle='round',
+                                             linestyle=linestyle
+                                             ))
+
+for (idx2, species) in enumerate(colors.keys()):
+    axes.text(4.2, idx2+0.5, sp2long[species],va='center',ha='left',style='italic')
+axes.text(2.5, 4.7, 'distance', ha='center',va='bottom')     
+            
+axes.set_xlim(0,6)
+axes.set_ylim(0,5)
+
+
+    
+#    level_value = df.columns[level_index+1]
+#    axes.plot([], [], linewidth=level_width[level_index], color='black', 
+#              linestyle=level_style[level_index], label=f'{level_value}')
+#axes.legend(loc='upper left')
 axes.set_axis_off()
 figure.savefig('groups-legend.pdf', bbox_inches='tight')
 

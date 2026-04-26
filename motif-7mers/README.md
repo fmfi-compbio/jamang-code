@@ -4,22 +4,22 @@ This folder contains files needed for analysis of 7-mers in telomeric motifs and
 * `clusters.py` a Python script that runs various analyses on the input motifs (containment distance, clustering at various thresholds)
 * `motif-groups.py` a Python script for producing the figure
 * `fw-c-7-sel-groups.tsv` output of `clusters.py`
-* `groups-manual.tsv` reformatted version of `fw-c-7-sel-groups.tsv`
+* `groups.tsv` reformatted version of `fw-c-7-sel-groups.tsv`
 * `groups-manual-matrix12.csv` manually created layout of the figure
 
 
 Commands used:
 ```bash
 # producing fw-c-7-sel-groups.tsv
-python clusters.py --add_identity --containment all-telo.fa fw-c-7-sel --dist_list "0,0.1,0.7,0.8,1" --threshold 0.7
+python clusters.py --add_identity --containment all-telo.fa fw-c-7-sel --dist_list "0,0.1,0.7,0.8" --threshold 0.7
 
 # producing fw-c-7-dist.tsv
 #   that is, distance matrix without special treatment of 0 entries
 #   used in supplement
 python clusters.py --containment all-telo.fa fw-c-7 --dist_list "0,0.1,0.7,0.8,1" --threshold 0.7
 
-# reformatting fw-c-7-sel-groups.tsv to groups-manual.tsv
-perl -lane 'next if $.==1; $n++; $n--; $F[0]=~s/...(..).-chr(\d+[LR])-(.*)$/$1$2$3/ or die $F[0]; $F[0]=~s/d$//; print join("\t", @F, int($n/8), $n%8); $n++' fw-c-7-sel-groups.tsv > groups-manual.tsv
+# reformatting fw-c-7-sel-groups.tsv to groups.tsv
+perl -lane 'if($.==1) { next}; $F[0]=~s/...(..).-chr(\d+[LR])-(.*)$/$1$2$3/ or die $F[0]; $F[0]=~s/d$//; print join("\t", @F)' fw-c-7-sel-groups.tsv > groups.tsv
 
 # producing the figure
 python3 ./motif-groups.py
