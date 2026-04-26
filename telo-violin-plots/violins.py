@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use('agg')
+matplotlib.rcParams['font.size']=14
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -25,12 +26,12 @@ def get_data(filename):
     return grouped_table
 
 
-def add_counts(table, ax, max_len):
+def add_counts(table, ax, max_len, rotation=0):
     # add read counts on top of the plot in axes ax
     sizes = table['telo'].value_counts().sort_index()
     for (x_idx, chr) in enumerate(sizes.index):
         ax.text(x_idx, 0.99*max_len, str(sizes[chr]),
-                ha="center", va="top", color='gray')
+                ha="center", va="top", color='gray', rotation=rotation)
     ax.text(-0.55, 0.99*max_len, "n=",
             ha="right", va="top", color="gray")
 
@@ -45,7 +46,8 @@ def draw_data_single(table, species, filename_fig, filename_txt, max_len):
                    width=0.9, color='lightblue', 
                    bw_adjust=0.9, cut=0, density_norm="count")
 
-    add_counts(table, ax, max_len)
+    # read counts rotated by 30 degrees
+    add_counts(table, ax, max_len, rotation=30)
     
     #ax.set_title(f"{species} telomeric read lengths")
     ax.set_ylabel('Repeat array length')
@@ -94,7 +96,8 @@ def draw_data_all(species, filename, max_len):
                        width=0.9, color='lightblue',
                        bw_adjust=0.9, cut=0, density_norm="count")
 
-        add_counts(species[i][1], ax, max_len)
+        # read counts rotated by 30 degrees
+        add_counts(species[i][1], ax, max_len, rotation=30)
         
         # other plot settings    
         ax.set_title(f"{species[i][0]}", style='italic')
