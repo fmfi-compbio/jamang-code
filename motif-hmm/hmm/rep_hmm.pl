@@ -28,7 +28,7 @@ as well as detailed viterbi path
 # $hmm->{'states'}[$i]{'emit'}[$b] = emmission prob
 # $hmm->{'states'}[$i]{'in'}{$j} = transition prob
 # $hmm->{'states'}[$i]{'symbol'} = A/C/G/T or - for background states
-# $hmm->{'states'}[$i]{'l_emit'}[$b] = log emmission prob
+# $hmm->{'states'}[$i]{'l_emit'}[$b] = log emmission prob; 1 for N
 # $hmm->{'states'}[$i]{'l_in'}{$j} = log transition prob
 # $hmm->['states'}[$i]{'group'} = name of motif or 'bg'
 # $hmm->['states'}[$i]{'type'} = 'match' or 'insert'
@@ -324,6 +324,7 @@ sub add_state {
     for(my $b=0; $b<4; $b++) {
 	$state->{'l_emit'}[$b] = log $state->{'emit'}[$b]
     }
+    $state->{'l_emit'}[4] = 1.0;
     $hmm->{'states'}[$idx] = $state;
     $hmm->{'map'}{$key} = $idx;	
 }
@@ -332,7 +333,7 @@ sub add_state {
 #######
 sub base2num {
     my ($b) = @_;
-    my $i = index("ACGT", uc $b);
+    my $i = index("ACGTN", uc $b);
     die "bad base $b" unless $i>=0;
     return $i;
 }
