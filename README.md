@@ -26,9 +26,10 @@ Sequencing reads and annotated assemblies can be also found at the European Nucl
 * [motif-7mers](./motif-7mers): analysis of 7-mers in telomeric motifs
 * [motif-hmm](./motif-hmm): profile HMMs of telomeric motifs used on long reads
 * [telo-violin-plots](./telo-violin-plots): violin plots of telomere lengths
+* [terra_and_rca](./terra_and_rca): finding telomeric motifs in RNA_seq and RCA data
 
 ## Other analyses
 
 * [bal31-dots](./bal31-dots): chromosome plots for BAL-31 experiments
-* [chrom-paint](./chrom-paint): chromosome paint figure where chromosomes of *J. angkorensis* are painted by nucleotide alignments with the three target genomes
 * [tandem-repeats](./tandem-repeats): a scatter plot of tandem repeats in five genomes
+* [chrom-paint](./chrom-paint): chromosome paint figure where chromosomes of *J. angkorensis* are painted by nucleotide alignments with the three target genomes
